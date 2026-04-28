@@ -57,6 +57,25 @@ The script:
 3. Streams metrics to InfluxDB in real-time
 4. Shows live dashboard
 
+## View Results Online
+
+**Grafana Cloud Dashboard**: [Grafana Cloud k6](https://ana.grafana.net/a/k6-app/projects/7399805)
+
+All GitHub Actions test runs are automatically sent to Grafana Cloud k6 for persistent results and visualization.
+
+### Local Testing
+```bash
+# Run test locally with Grafana dashboard
+./scripts/run_test.sh baseline groq
+open http://localhost:3000  # Local Grafana (admin/admin)
+```
+
+### CI/CD Testing
+```bash
+# GitHub Actions automatically sends results to k6 Cloud
+# **View results**: [Grafana Cloud k6](https://ana.grafana.net/a/k6-app/projects/7399805)
+```
+
 ## Load Profiles
 
 Pre-configured realistic workload patterns:
