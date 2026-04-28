@@ -46,15 +46,16 @@ jobs:
       
       - name: Run Test
         env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LOAD_PROFILE: ${{ github.event.inputs.profile || 'baseline' }}
           PROVIDER: ${{ github.event.inputs.provider || 'groq' }}
         run: |
-          k6 run \
+          k6 login cloud --token "${K6_CLOUD_TOKEN}"
+          k6 cloud run \
             --env LOAD_PROFILE="${LOAD_PROFILE}" \
             --env PROVIDER="${PROVIDER}" \
-            --summary-export=summary.json \
             tests/performance_test.js
       
       - name: Upload Results
