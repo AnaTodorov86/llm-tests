@@ -44,9 +44,7 @@ jobs:
           LOAD_PROFILE: ${{ github.event.inputs.profile || 'baseline' }}
           PROVIDER: ${{ github.event.inputs.provider || 'groq' }}
         run: |
-          k6 cloud --project-id="${K6_CLOUD_PROJECT_ID}" --token="${K6_CLOUD_TOKEN}" \
-            -e LOAD_PROFILE="${LOAD_PROFILE}" -e PROVIDER="${PROVIDER}" \
-            tests/performance_test.js
+          k6 cloud -e LOAD_PROFILE="${LOAD_PROFILE}" -e PROVIDER="${PROVIDER}" tests/performance_test.js
       
       - uses: actions/upload-artifact@v4
         if: always()
