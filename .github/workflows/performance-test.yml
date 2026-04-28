@@ -21,49 +21,36 @@ on:
         options:
           - groq
           - openai
-  
   schedule:
     - cron: '0 2 * * *'
 
 jobs:
   performance-test:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
       - name: Install k6
         run: |
-          sudo gpg -k
-          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
-            --keyserver hkp://keyserver.ubuntu.com:80 \
-            --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
-          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | \
-            sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update
-          sudo apt-get install k6
+          wget -q https://github.com/grafana/k6/releases/download/v0.49.0/k6-v0.49.0-linux-amd64.tar.gz
+          tar -xzf k6-v0.49.0-linux-amd64.tar.gz
+          sudo cp k6-v0.49.0-linux-amd64/k6 /usr/local/bin/
       
       - name: Run Test
         env:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LOAD_PROFILE: ${{ github.event.inputs.profile || 'baseline' }}
           PROVIDER: ${{ github.event.inputs.provider || 'groq' }}
         run: |
-          k6 login cloud --token "${K6_CLOUD_TOKEN}"
-          k6 cloud run \
-            --project-id "${K6_CLOUD_PROJECT_ID}" \
-            --env LOAD_PROFILE="${LOAD_PROFILE}" \
-            --env PROVIDER="${PROVIDER}" \
+          k6 cloud --project-id="${K6_CLOUD_PROJECT_ID}" --token="${K6_CLOUD_TOKEN}" \
+            -e LOAD_PROFILE="${LOAD_PROFILE}" -e PROVIDER="${PROVIDER}" \
             tests/performance_test.js
       
-      - name: Upload Results
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: k6-results
+          name: k6-results-${{ github.run_number }}
           path: summary.json
           retention-days: 90
