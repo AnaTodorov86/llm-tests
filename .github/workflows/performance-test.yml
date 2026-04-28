@@ -41,10 +41,16 @@ jobs:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LOAD_PROFILE: ${{ github.event.inputs.profile || 'baseline' }}
           PROVIDER: ${{ github.event.inputs.provider || 'groq' }}
         run: |
-          k6 cloud -e LOAD_PROFILE="${LOAD_PROFILE}" -e PROVIDER="${PROVIDER}" tests/performance_test.js
+          k6 cloud \
+            -e LOAD_PROFILE="${LOAD_PROFILE}" \
+            -e PROVIDER="${PROVIDER}" \
+            -e GROQ_API_KEY="${GROQ_API_KEY}" \
+            -e OPENAI_API_KEY="${OPENAI_API_KEY}" \
+            tests/performance_test.js
       
       - uses: actions/upload-artifact@v4
         if: always()
