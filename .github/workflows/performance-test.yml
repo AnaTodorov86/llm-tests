@@ -55,6 +55,7 @@ jobs:
         run: |
           k6 login cloud --token "${K6_CLOUD_TOKEN}"
           k6 cloud run \
+            --project-id "${K6_CLOUD_PROJECT_ID}" \
             --env LOAD_PROFILE="${LOAD_PROFILE}" \
             --env PROVIDER="${PROVIDER}" \
             tests/performance_test.js
