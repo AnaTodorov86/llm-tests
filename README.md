@@ -51,7 +51,7 @@ cd llm-perf-framework
 open http://localhost:3000  # Grafana (admin/admin)
 ```
 
-That's it. The script:
+The script:
 1. Starts observability stack (InfluxDB + Grafana)
 2. Runs k6 test with streaming enabled
 3. Streams metrics to InfluxDB in real-time
