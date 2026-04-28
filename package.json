@@ -1,0 +1,34 @@
+{
+  "name": "llm-perf-framework",
+  "version": "1.0.0",
+  "description": "k6 framework for LLM performance testing with streaming metrics",
+  "scripts": {
+    "test:baseline": "./scripts/run_test.sh baseline groq",
+    "test:chat": "./scripts/run_test.sh chat groq",
+    "test:code": "./scripts/run_test.sh code groq",
+    "test:stress": "./scripts/run_test.sh stress groq",
+    "obs:start": "docker-compose -f docker-compose.observability.yml up -d",
+    "obs:stop": "./scripts/stop_observability.sh",
+    "obs:clean": "./scripts/stop_observability.sh clean",
+    "grafana": "open http://localhost:3000"
+  },
+  "keywords": [
+    "k6",
+    "performance-testing",
+    "llm",
+    "groq",
+    "openai",
+    "streaming",
+    "ttft",
+    "tps"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "k6": ">=0.45.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/llm-perf-framework"
+  }
+}

@@ -1,0 +1,66 @@
+name: LLM Performance Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Load profile'
+        required: true
+        default: 'baseline'
+        type: choice
+        options:
+          - baseline
+          - chat
+          - code
+          - stress
+      provider:
+        description: 'LLM provider'
+        required: true
+        default: 'groq'
+        type: choice
+        options:
+          - groq
+          - openai
+  
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  performance-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 \
+            --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | \
+            sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+      
+      - name: Run Test
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LOAD_PROFILE: ${{ github.event.inputs.profile || 'baseline' }}
+          PROVIDER: ${{ github.event.inputs.provider || 'groq' }}
+        run: |
+          k6 run \
+            --env LOAD_PROFILE="${LOAD_PROFILE}" \
+            --env PROVIDER="${PROVIDER}" \
+            --summary-export=summary.json \
+            tests/performance_test.js
+      
+      - name: Upload Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: k6-results
+          path: summary.json
+          retention-days: 90

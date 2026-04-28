@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'llm-perf-testing'
+    environment: 'local'
+
+# Scrape k6 metrics if using Prometheus output
+scrape_configs:
+  - job_name: 'k6'
+    static_configs:
+      - targets: ['host.docker.internal:5665']
+        labels:
+          service: 'k6-performance-tests'
+    
+    # Scrape only when k6 is running
+    scrape_interval: 5s
+    scrape_timeout: 4s
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

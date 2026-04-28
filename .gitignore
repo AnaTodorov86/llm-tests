@@ -1,0 +1,36 @@
+# k6 outputs
+*.html
+*.json
+summary.txt
+
+# Environment files
+.env
+.env.local
+
+# API keys (NEVER commit these)
+*.key
+secrets/
+
+# Docker volumes
+volumes/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (if using npm scripts)
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# Test results
+results/
+reports/
