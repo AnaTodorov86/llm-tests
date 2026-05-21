@@ -38,6 +38,11 @@ export default function () {
         provider
     );
     
+    if (result.status === 429) {
+        sleep(result.retryAfter || 5);
+        return;
+    }
+
     if (result.status !== 200) {
         console.error(`Request failed: ${result.status} - ${result.error || 'Unknown error'}`);
     }
