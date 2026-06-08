@@ -17,7 +17,7 @@ export const options = {
         { duration: profile.duration, target: profile.vus },
     ],
     
-    thresholds: generateThresholds(profile),
+    thresholds: generateThresholds(profile, PROVIDER_NAME),
     
     tags: {
         test_name: 'llm_performance',
